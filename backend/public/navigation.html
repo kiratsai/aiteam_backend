@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Navigation Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
     <div id="app" class="container mt-4">
         <h1 class="mb-4">Navigation Management</h1>
@@ -30,8 +32,11 @@
             </div>
             <div class="mb-3">
                 <button type="submit" class="btn btn-primary me-2">Submit</button>
-                <button type="button" class="btn btn-secondary me-2" @click="getAllNavigation">Get All Navigation</button>
-                <button type="button" class="btn btn-danger me-2" @click="clearAllNavigation">Clear All Navigation</button>
+                <button type="button" class="btn btn-secondary me-2" @click="getAllNavigation">Get All
+                    Navigation</button>
+                <button type="button" class="btn btn-danger me-2" @click="clearAllNavigation">Clear All
+                    Navigation</button>
+                <button type="button" class="btn btn-primary me-2" @click="getpy"> py </button>
             </div>
         </form>
 
@@ -56,7 +61,8 @@
                         <td>{{ item.y }}</td>
                         <td>{{ item.z }}</td>
                         <td>
-                            <button @click="clearANavigation(tableName, item.id)" class="btn btn-warning btn-sm">Delete</button>
+                            <button @click="clearANavigation(tableName, item.id)"
+                                class="btn btn-warning btn-sm">Delete</button>
                         </td>
                     </tr>
                 </tbody>
@@ -66,112 +72,129 @@
 
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script>
-    const { createApp, ref, computed, onMounted } = Vue;
+        const { createApp, ref, computed, onMounted } = Vue;
 
-    const App = {
-        setup() {
-            const navigation = ref({ name: '', id: '', x: '', y: '', z: '' });
-            const allNavigationData = ref({});
+        const App = {
+            setup() {
+                const navigation = ref({ name: '', id: '', x: '', y: '', z: '' });
+                const allNavigationData = ref({});
 
-            const groupedNavigationData = computed(() => {
-                const grouped = {};
-                for (const [key, value] of Object.entries(allNavigationData.value)) {
-                    const [name, id] = JSON.parse(key);
-                    const [x, y, z] = JSON.parse(value);
-                    if (!grouped[name]) {
-                        grouped[name] = [];
+                const groupedNavigationData = computed(() => {
+                    const grouped = {};
+                    for (const [key, value] of Object.entries(allNavigationData.value)) {
+                        const [name, id] = JSON.parse(key);
+                        const [x, y, z] = JSON.parse(value);
+                        if (!grouped[name]) {
+                            grouped[name] = [];
+                        }
+                        grouped[name].push({ id, x, y, z });
                     }
-                    grouped[name].push({ id, x, y, z });
-                }
-                return grouped;
-            });
+                    return grouped;
+                });
 
-            const submitForm = async () => {
-                try {
-                    const response = await fetch('/api/navigation', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(navigation.value)
-                    });
-                    const result = await response.json();
-                    console.log(result);
-                    alert('Navigation data submitted successfully');
-                    getAllNavigation();
-                } catch (error) {
-                    console.error("Error submitting form:", error);
-                    alert('Error submitting navigation data');
-                }
-            };
+                const submitForm = async () => {
+                    try {
+                        const response = await fetch('/api/navigation', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(navigation.value)
+                        });
+                        const result = await response.json();
+                        console.log(result);
+                        alert('Navigation data submitted successfully');
+                        getAllNavigation();
+                    } catch (error) {
+                        console.error("Error submitting form:", error);
+                        alert('Error submitting navigation data');
+                    }
+                };
 
-            const getAllNavigation = async () => {
-                try {
-                    const response = await fetch('/api/navigation/getAllNavigation');
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    const data = await response.json();
-                    console.log("All navigation data:", data);
-                    allNavigationData.value = data;
-                } catch (error) {
-                    console.error("Error fetching navigation data:", error);
-                    alert('Error fetching navigation data');
-                }
-            };
+                const getAllNavigation = async () => {
+                    try {
+                        const response = await fetch('/api/navigation/getAllNavigation');
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        const data = await response.json();
+                        console.log("All navigation data:", data);
+                        allNavigationData.value = data;
+                    } catch (error) {
+                        console.error("Error fetching navigation data:", error);
+                        alert('Error fetching navigation data');
+                    }
+                };
 
-            const clearAllNavigation = async () => {
-                try {
-                    const response = await fetch('/api/navigation/cleanAllNavigation', { method: 'POST' });
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    const result = await response.json();
-                    console.log(result.message);
-                    alert("All navigation data has been cleared.");
-                    getAllNavigation();
-                } catch (error) {
-                    console.error("Error clearing all navigation:", error);
-                    alert('Error clearing all navigation data');
-                }
-            };
+                const clearAllNavigation = async () => {
+                    try {
+                        const response = await fetch('/api/navigation/cleanAllNavigation', { method: 'POST' });
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        const result = await response.json();
+                        console.log(result.message);
+                        alert("All navigation data has been cleared.");
+                        getAllNavigation();
+                    } catch (error) {
+                        console.error("Error clearing all navigation:", error);
+                        alert('Error clearing all navigation data');
+                    }
+                };
 
-            const clearANavigation = async (name, id) => {
-                try {
-                    const response = await fetch(`/api/navigation/cleanANavigation/${name}/${id}`, { method: 'POST' });
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    const result = await response.json();
-                    console.log(result);
-                    alert(`Navigation for ${name} with ID ${id} has been cleared.`);
-                    getAllNavigation();
-                } catch (error) {
-                    console.error("Error clearing specific navigation:", error);
-                    alert('Error clearing specific navigation');
-                }
-            };
+                const clearANavigation = async (name, id) => {
+                    try {
+                        const response = await fetch(`/api/navigation/cleanANavigation/${name}/${id}`, { method: 'POST' });
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        const result = await response.json();
+                        console.log(result);
+                        alert(`Navigation for ${name} with ID ${id} has been cleared.`);
+                        getAllNavigation();
+                    } catch (error) {
+                        console.error("Error clearing specific navigation:", error);
+                        alert('Error clearing specific navigation');
+                    }
+                };
 
-            const clearNavigationTable = async (name) =>{
-                try{
-                    const response =await fetch(`/api/navigation/cleanNavigation/${name}`, { method: 'POST' });
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    const result = await response.json();
-                    console.log(result);
-                    alert(`Navigetion table for ${name} has been cleared.`);
-                }catch(error){
-                    console.error("Error clearing specific table navigation:", error);
-                    alert('Error clearing specific table navigation');
+                const clearNavigationTable = async (name) => {
+                    try {
+                        const response = await fetch(`/api/navigation/cleanNavigation/${name}`, { method: 'POST' });
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        const result = await response.json();
+                        console.log(result);
+                        alert(`Navigetion table for ${name} has been cleared.`);
+                    } catch (error) {
+                        console.error("Error clearing specific table navigation:", error);
+                        alert('Error clearing specific table navigation');
+                    }
                 }
+
+                const getpy = async () => {
+                    try {
+                        const response = await fetch('/api/python/getpynavigation', {
+                            method: 'GET',
+                        });
+                        if (!response.ok) {
+                            throw new Error(response.statusText);
+                        }
+                        const data = await response.text();
+                        console.log(data);
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
+
+                onMounted(getAllNavigation);
+
+                return {
+                    navigation,
+                    groupedNavigationData,
+                    getpy,
+                    submitForm,
+                    getAllNavigation,
+                    clearAllNavigation,
+                    clearANavigation,
+                    clearNavigationTable,
+                };
             }
+        };
 
-            onMounted(getAllNavigation);
-
-            return {
-                navigation,
-                groupedNavigationData,
-                submitForm,
-                getAllNavigation,
-                clearAllNavigation,
-                clearANavigation,
-                clearNavigationTable,
-            };
-        }
-    };
-
-    createApp(App).mount('#app');
+        createApp(App).mount('#app');
     </script>
 </body>
+
 </html>

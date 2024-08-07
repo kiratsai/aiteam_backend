@@ -92,4 +92,7 @@ router.all('/stop', async function (req, res) {
   }
 });
 
+
+// navigation test part:
+
 module.exports = router;
