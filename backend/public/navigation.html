@@ -37,6 +37,7 @@
 
         <h2 class="mt-4">All Navigation Data</h2>
         <div v-for="(tableData, tableName) in groupedNavigationData" :key="tableName" class="mb-4">
+            <button @click="clearNavigationTable(tableName)" class="btn btn-warning btn-sm"> Delete table</button>
             <h3>{{ tableName }}</h3>
             <table class="table table-striped">
                 <thead>
@@ -143,6 +144,19 @@
                 }
             };
 
+            const clearNavigationTable = async (name) =>{
+                try{
+                    const response =await fetch(`/api/navigation/cleanNavigation/${name}`, { method: 'POST' });
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    const result = await response.json();
+                    console.log(result);
+                    alert(`Navigetion table for ${name} has been cleared.`);
+                }catch(error){
+                    console.error("Error clearing specific table navigation:", error);
+                    alert('Error clearing specific table navigation');
+                }
+            }
+
             onMounted(getAllNavigation);
 
             return {
@@ -151,7 +165,8 @@
                 submitForm,
                 getAllNavigation,
                 clearAllNavigation,
-                clearANavigation
+                clearANavigation,
+                clearNavigationTable,
             };
         }
     };

@@ -106,8 +106,42 @@ async function clearNavigation(name, id){
   }
 }
 
+async function clearNavigationTable(name) {
+  console.log("test function clear table navigation: name:", name);
+  try {
+    const allKeys = await client.hKeys('allnavigation');
+    const keysToDelete = allKeys.filter(key => {
+      try {
+        const [keyName, keyId] = JSON.parse(key);
+        return keyName === name;
+      } catch (e) {
+        console.error("Error parsing key:", key, e);
+        return false;
+      }
+    });
+
+    console.log("keys delete", keysToDelete);
+
+    if (keysToDelete.length === 0) {
+      console.log('No matching keys found for:', name);
+      return 0;
+    }
+    
+    let totalDeleted = 0;
+    for (const key of keysToDelete) {
+      const deleted = await client.hDel('allnavigation', key);
+      totalDeleted += deleted;
+    }
+    
+    console.log('clean table navigation: ', totalDeleted);
+    return totalDeleted;
+  } catch (error) {
+    console.error("Error clearing navigation table:", error);
+    throw error;
+  }
+}
 
 
-module.exports = { clearNavigation, clearAllNavigaton, getAllNavigation, setnavigation, 
+module.exports = { clearNavigationTable, clearNavigation, clearAllNavigaton, getAllNavigation, setnavigation, 
                   cleanParameter, cleanAllParameters, getAllParameters, setparameter1, 
                   client };

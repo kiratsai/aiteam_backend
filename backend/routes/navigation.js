@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { connectToDB, Sequelize } = require('../utils/db');
-const { setnavigation, getAllNavigation, clearAllNavigaton, clearNavigation, client } = require('../utils/redis');
+const { setnavigation, getAllNavigation, clearAllNavigaton, clearNavigation, clearNavigationTable, client } = require('../utils/redis');
 
 router.post('/', async function (req,res){
     console.log("navigation req", req.body);
@@ -48,7 +48,7 @@ router.post('/cleanANavigation/:name?/:id?', async function (req, res){
         const id = req.params.id;
         console.log(name, id)
         const clearNav = await clearNavigation(name, id);
-        console.log("clear all Navigation:", clearNav)
+        console.log("clear the Navigation:", clearNav)
         res.json({
             message: clearNav, 
             message1 : 'Clean the navigation completed successfully',});
@@ -56,5 +56,21 @@ router.post('/cleanANavigation/:name?/:id?', async function (req, res){
         console.log("clean navigation error:", error);
     }
 });
+
+router.post('/cleanNavigation/:name?', async function (req,res){
+    console.log("clean table Navigatiion:");
+    try{
+        const name = req.params.name;
+        console.log(name);
+        const clearNavT = await clearNavigationTable(name);
+        console.log("clear table Navigation: ", clearNavT);
+        res.json({
+            message: clearNavT,
+            message2: 'Clean table navigation completed successfully',
+        });
+    }catch(error){
+        console.log("Clean navigation table error:", error);
+    }
+})
 
 module.exports = router;
