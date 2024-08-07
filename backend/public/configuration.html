@@ -1,0 +1,161 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+
+<body>
+    <div id="app" class="container mt-4">
+        <form method="POST" action="" @submit.prevent="submitForm">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="text-center">Name</th>
+                        <th class="text-center">Parameter</th>
+                    </tr>
+                </thead>
+                <tbody id="add_parameter">
+                    <tr v-for="(row, index) in rows" :key="index">
+                        <td class="px-2">
+                            <input type="text" class="form-control" v-model="row.name" required />
+                        </td>
+                        <td class="px-2">
+                            <input type="text" class="form-control" v-model="row.parameter" required />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-around mb-3">
+                <a class="link-primary" @click="add"> add + </a>
+                <a class="link-danger" @click="deleteLast"> delete </a>
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary me-2">Submit</button>
+                <button type="button" class="btn btn-primary me-2" @click="get_all">Get All</button>
+                <button type="button" class="btn btn-danger" @click="cleanAllParameters">Clean All Parameters</button>
+            </div>
+        </form>
+
+        <!-- New table to display information -->
+        <h3 class="mt-4">All Parameters</h3>
+        <!-- <table class="table table-striped" v-if="allParameters">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Parameter</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(parameter, name) in allParameters" :key="name">
+                    <td>{{ name }}</td>
+                    <td>{{ parameter }}</td>
+                </tr>
+            </tbody>
+        </table> -->
+        <p v-else>No parameters to display.</p>
+    </div>
+</body>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script>
+const { createApp, onMounted } = Vue;
+
+const App = {
+    data() {
+        return {
+            rows: [{ name: '', parameter: '' }],
+            allParameters: null
+        };
+    },
+    methods: {
+        add() {
+            this.rows.push({ name: '', parameter: '' });
+            this.logIndexesAndKeys();
+        },
+        deleteLast() {
+            if (this.rows.length > 1) {
+                this.rows.pop();
+                this.logIndexesAndKeys();
+            } else {
+                console.warn('At least one row is required.');
+            }
+        },
+        logIndexesAndKeys() {
+            this.rows.forEach((row, index) => {
+                console.log(`Row ${index}:`, row);
+                console.log(`Index: ${index}, Key: ${index}`);
+            });
+        },
+        async submitForm() {
+            const response = await fetch('/api/config', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(this.rows)
+            });
+            const json = await response.json();
+            console.log(json);
+            alert(JSON.stringify(json));
+            this.get_all(); // Refresh the displayed data after submission
+        },
+        async get_all() {
+            try {
+                const response = await fetch('/api/config/get_all');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('Alldata:', data);
+                this.allParameters = data;
+                this.populateTable(data);
+            } catch (error) {
+                console.error("Error fetching all parameters:", error);
+            }
+        },
+        async cleanAllParameters() {
+            try {
+                const response = await fetch('/api/config/clean', { method: 'POST' });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const result = await response.json();
+                console.log(result.message);
+                this.rows = [{ name: '', parameter: '' }];
+                this.allParameters = null;
+                alert("All parameters have been cleared.");
+            } catch (error) {
+                console.error("Error cleaning parameters:", error);
+                alert("Failed to clean parameters. Please try again.");
+            }
+        },
+        populateTable(data) {
+            if (Array.isArray(data)) {
+                this.rows = data.map(item => ({
+                    name: item.name || '',
+                    parameter: item.parameter || ''
+                }));
+            } else if (typeof data === 'object' && data !== null) {
+                this.rows = Object.entries(data).map(([name, parameter]) => ({
+                    name,
+                    parameter: parameter.toString()
+                }));
+            } else {
+                console.error('Unexpected data format:', data);
+                this.rows = [{ name: '', parameter: '' }];
+            }
+        }
+    },
+    mounted() {
+        this.get_all();
+    }
+};
+
+createApp(App).mount('#app');
+</script>
+
+</html>
