@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Real-Time Data</title>
+</head>
+<body>
+  <div id="data"></div>
+  <script>
+    const eventSource = new EventSource('/api/python/stream-data');
+
+    eventSource.addEventListener('streaming', function(event) {
+      const dataDiv = document.getElementById('data');
+      const newData = document.createElement('p');
+      try {
+        const jsonData = JSON.parse(event.data);
+        newData.textContent = `x: ${jsonData.x}, y: ${jsonData.y}, z: ${jsonData.z}`;
+      } catch (error) {
+        console.error('Error parsing JSON:', error);
+        newData.textContent = 'Error parsing data';
+      }
+      dataDiv.appendChild(newData);
+    });
+  </script>
+</body>
+</html>

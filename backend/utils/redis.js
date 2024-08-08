@@ -70,8 +70,8 @@ const setnavigation = {
       this.x = x;
       this.y = y;
       this.z = z;
-      const arr_name_id = JSON.stringify([name, id]);
-      const arr_navigation = JSON.stringify([x, y, z]);
+      const arr_name_id =  JSON.stringify([name, id]);
+      const arr_navigation =  JSON.stringify([x, y, z]);
       await client.hSet('allnavigation', arr_name_id, arr_navigation);
       return `navigation save ${name}, ${id} : ${x} , ${y}, ${z}`;
     } catch (error) {

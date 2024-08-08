@@ -4,18 +4,18 @@ const { connectToDB, Sequelize } = require('../utils/db');
 const { setnavigation, getAllNavigation, clearAllNavigaton, clearNavigation, clearNavigationTable, client } = require('../utils/redis');
 
 router.post('/', async function (req,res){
-    console.log("navigation req", req.body);
-    const results = [];
+    console.log("index", req.body);
 
-    try{
-        const navigation_parameter = req.body;
-        const {name,id,x,y,z} = navigation_parameter;
-        const redisResult = await setnavigation.setAnavigation(name, id, x, y, z);
-        console.log(redisResult);
+    // try{
+    //     const navigation_parameter = req.body;
+    //     console.log(navigation_parameter);
+    //     const {name,id,x,y,z} = navigation_parameter;
+    //     const redisResult = await setnavigation.setAnavigation(name, id, x, y, z);
+    //     console.log(redisResult);
 
-    }catch(error){
-        console.log("navigation.js/ error:", error);
-    }
+    // }catch(error){
+    //     console.log("navigation.js/ error:", error);
+    // }
 
 });
 
