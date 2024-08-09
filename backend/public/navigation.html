@@ -40,7 +40,7 @@
             </div>
 
         <h2 class="mt-4">All Navigation Data</h2>
-        <!-- <div v-for="(tableData, tableName) in groupedNavigationData" :key="tableName" class="mb-4">
+        <div v-for="(tableData, tableName) in groupedNavigationData" :key="tableName" class="mb-4">
             <button @click="clearNavigationTable(tableName)" class="btn btn-warning btn-sm">Delete table</button>
             <h3>{{ tableName }}</h3>
             <table class="table table-striped">
@@ -65,7 +65,7 @@
                     </tr>
                 </tbody>
             </table>
-        </div> -->
+        </div>
     </div>
 
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -108,6 +108,7 @@
                     }
 
                     const result = await response.json();
+                    alert(JSON.stringify(result));
                     console.log(result);
                 } catch (error) {
                     console.error('Error during form submission:', error);

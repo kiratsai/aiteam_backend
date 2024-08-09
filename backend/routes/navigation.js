@@ -6,16 +6,16 @@ const { setnavigation, getAllNavigation, clearAllNavigaton, clearNavigation, cle
 router.post('/', async function (req,res){
     console.log("index", req.body);
 
-    // try{
-    //     const navigation_parameter = req.body;
-    //     console.log(navigation_parameter);
-    //     const {name,id,x,y,z} = navigation_parameter;
-    //     const redisResult = await setnavigation.setAnavigation(name, id, x, y, z);
-    //     console.log(redisResult);
-
-    // }catch(error){
-    //     console.log("navigation.js/ error:", error);
-    // }
+    try{
+        const navigation_parameter = req.body;
+        console.log(navigation_parameter);
+        const {name,id,x,y,z} = navigation_parameter;
+        const redisResult = await setnavigation.setAnavigation(name, id, x, y, z);
+        console.log(redisResult);
+        res.json(redisResult);
+    }catch(error){
+        console.log("navigation.js/ error:", error);
+    }
 
 });
 
