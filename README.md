@@ -1,5 +1,3 @@
-# aiteam_backend
-
 Ubuntu Node.js + MySQL + Vue Development Guide
 (從開機到放棄)
 # Readme
@@ -15,7 +13,7 @@ This guide will help you set up a development environment on a Linux operating s
 
 #### The Environment
 
-
+Backend server:
 1. **Database: MySQL**
    - Developers need to download the MySQL Community Server.
 
@@ -71,12 +69,40 @@ password: Aiteam£123456
    npm start
    ```
 
+4. **jwt.io token**
+npm install jsonwebtoken --save
 
-   
-4. **Create Frontend Vue Server:**
-   4.1 Use the following command to set up a Vue server. When prompted, choose No for all options except Vue Router (#3) and ESLint (#7). Adding Vue Router enables client-side routing in the app for navigating between different components. ESLint is a static analysis tool commonly used in JavaScript development to enforce code quality and maintain consistent coding practices:  
+
+5. **Install redis**
+link: https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-linux/
+sudo apt-get update
+sudo apt-get install redis
+
+
+
+
+6. **RESTful API and Ajax:**
+
+   6.1 RESTful API will be used for the creation, retrieval, update, and deletion (CRUD) operations on resources.  
+   6.2 To make a RESTful API, please open the app.js file in your backend and the following lines is an example:
+`var bookingsRouter = require('./routes/bookings'); // around line 9`
+`app.use('/api/bookings', bookingsRouter); // around line 25`
+
+
+
+   6.2 Ajax will be used to update specific parts of a web page without reloading the entire page.
+
+
+
+
+
+
+
+Frontend Server:
+1. **Create Frontend Vue Server:**
+   1.1 Use the following command to set up a Vue server. When prompted, choose No for all options except Vue Router (#3) and ESLint (#7). Adding Vue Router enables client-side routing in the app for navigating between different components. ESLint is a static analysis tool commonly used in JavaScript development to enforce code quality and maintain consistent coding practices:  
    `npx create-vue aiteam_frontend`  
-   4.2 If you haven't selected ESLint during project creation, you may use the following command and follow the suggested settings:  
+   1.2 If you haven't selected ESLint during project creation, you may use the following command and follow the suggested settings:  
    ```
    cd aiteam_frontend
    npm init @eslint/config
@@ -89,7 +115,8 @@ password: Aiteam£123456
    5. Brower
    6. Yes
    7. npm
-   4.3 **Start the server command:**  
+
+   1.3 **Start the server command:**  
    ```
    cd aiteam_frontend
    npm install
@@ -97,20 +124,9 @@ password: Aiteam£123456
    ```
 
 
-5. **RESTful API and Ajax:**
 
-   5.1 RESTful API will be used for the creation, retrieval, update, and deletion (CRUD) operations on resources.  
-   5.2 To make a RESTful API, please open the app.js file in your backend and the following lines is an example:
-`var bookingsRouter = require('./routes/bookings'); // around line 9`
-`app.use('/api/bookings', bookingsRouter); // around line 25`
-
-
-
-   5.2 Ajax will be used to update specific parts of a web page without reloading the entire page.
-
-
-6. **Vue development**
-6.1 To view the Vue file, you need to configure the router. Inside the /router/index.js file, the following code is an example:
+2. **Vue development**
+2.1 To view the Vue file, you need to configure the router. Inside the /router/index.js file, the following code is an example:
 {
   path: '/booking/create',
   name: 'booking-create',
@@ -120,7 +136,7 @@ password: Aiteam£123456
   component: () => import('../views/BookingView.vue') //the vue that include the html code
 }
 
-6.2 Proxy Server
+2.2 Proxy Server
 In order to enable the Vue app to consume the Express endpoints, we need to set up a proxy configuration that will route the requests to the appropriate endpoints.
 
 To achieve this, open the vite.config.js file and add the following code inside the server object of the defineConfig() function:
@@ -131,11 +147,12 @@ To achieve this, open the vite.config.js file and add the following code inside 
             changeOrigin: true,
             // rewrite: (path) => path.replace(/^\/api/, ''),
       }
-    }
+   
+ }
 },`
 
 
-6.3 Bootstarp:
+2.3 Bootstarp:
 install Bootstarp:
 `npm install bootstrap --save`
 
@@ -144,13 +161,9 @@ In the main.js file of your project, add the following line to import the Bootst
 import "bootstrap"`
 
 
-
-7. **Node.js development**
-
-
-
-8. **Install and activate the wifi driver ASUS UNC PRO : Model@NUC13ANH**
-8.1. Download latest driver: https://www.intel.com/content/www/us/en/support/articles/000005511/wireless.html
+Computer setting:
+ 1. **Install and activate the wifi driver ASUS UNC PRO : Model@NUC13ANH**
+1.1. Download latest driver: https://www.intel.com/content/www/us/en/support/articles/000005511/wireless.html
 Device: Intel® Wi-Fi 6 AX210 160MHz, Kernels: 5.10+, 
 Firmware (First Version):iwlwifi-ty-59.601f3a66.0.tgz
 
@@ -160,7 +173,7 @@ sudo cp -r * /lib/firmware/  **copy your downloaded data to /lib/firmware**
 sudo update-initramfs -u
 sudo reboot
 
-8.2. sudo add-apt-repository ppa:cappelikan/ppa
+1.2. sudo add-apt-repository ppa:cappelikan/ppa
 sudo apt update
 sudo apt install mainline
 sudo mainline install-latest
@@ -169,11 +182,4 @@ sudo reboot
 If after reboot shows the bad signature messages, enter BIOS and set security boot to disabled.
 
 
-9. **Install redis**
-link: https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-linux/
-sudo apt-get update
-sudo apt-get install redis
-
-
- 
 
