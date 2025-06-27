@@ -27,6 +27,7 @@ Backend server:
 
    1.3 **Server Setting References:**  
    To add a new user, follow this guide: [How to Create MySQL User and Grant Privileges](https://www.hostinger.com/tutorials/mysql/how-create-mysql-user-and-grant-permissions-command-line)
+   sudo mysql
 Username: aiteam
 password: Aiteam£123456
 
